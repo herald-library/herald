@@ -30,17 +30,6 @@ defmodule Herald.Router do
 
   defmacro __before_compile__(_env) do
     quote do
-      case Application.get_env(:herald, :router) do
-        __MODULE__ ->
-          :ok
-
-        nil ->
-          Application.put_env(:herald, :router, __MODULE__)
-
-        another ->
-          raise "You can have one router per application"
-      end
-
       def routes(), do: @routes
     end
   end
