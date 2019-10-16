@@ -1,0 +1,18 @@
+version: '3'
+
+networks:
+  herald: {}
+
+services:
+  application:
+    dns:
+    - 8.8.8.8
+    - 9.9.9.9
+    networks:
+    - herald
+    volumes:
+    - .:/srv/app
+    build:
+      context: '.'
+      dockerfile: Dockerfile
+    command: tail -f /dev/null
