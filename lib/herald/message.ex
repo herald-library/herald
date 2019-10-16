@@ -10,13 +10,15 @@ defmodule Herald.Message do
         id:      nil,
         queue:   nil,
         errors:  [],
-        payload: nil
+        payload: nil,
+        valid?:  false
       ]
 
       @type t :: %__MODULE__{
         id:      UUID.t(),
         queue:   binary(),
-        payload: map()
+        payload: map(),
+        valid?:  boolean()
       }
 
       import Herald.Message
