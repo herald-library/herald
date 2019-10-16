@@ -25,6 +25,7 @@ defmodule Herald.MixProject do
       {:uuid, "~> 1.1"},
       {:ecto, "~> 3.2"},
       {:jason, "~> 1.1"},
+      {:amqp, "~> 1.3"},
 
       # Development dependencies
       {:ex_doc, "~> 0.21", only: :dev, runtime: false},
