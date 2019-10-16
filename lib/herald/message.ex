@@ -52,7 +52,8 @@ defmodule Herald.Message do
       Create new message and validate their payload
       """
       @spec new(binary(), map(), any()) :: t()
-      def new(queue, payload, opts \\ []) do
+      def new(queue, payload, opts \\ [])
+      when is_binary(queue) and is_map(payload) do
         %__MODULE__{}
         |> set_message_id(opts)
         |> Map.put(:queue, queue)
