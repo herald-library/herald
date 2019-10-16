@@ -24,3 +24,6 @@ herald-*.tar
 
 # Add fields with development examples
 lib/develop/*.ex
+
+# Logs directory
+log/*
