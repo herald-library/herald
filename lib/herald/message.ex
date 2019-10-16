@@ -7,7 +7,7 @@ defmodule Herald.Message do
 
       @before_compile Herald.Message
 
-      @derive Jason.Encoder
+      @derive {Jason.Encoder, except: [:errors, :valid?]}
       defstruct [
         id:      nil,
         queue:   nil,
@@ -79,7 +79,7 @@ defmodule Herald.Message do
         message
         |> Map.put(:valid?, valid)
         |> Map.put(:errors, errors)
-        |> Map.put(:payload, payload)
+        |> Map.put(:payload, changes)
       end
     end
   end
