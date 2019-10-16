@@ -5,6 +5,8 @@ defmodule Herald.Message do
       @schema %{}
       @required []
 
+      @before_compile Herald.Message
+
       @derive Jason.Encoder
       defstruct [
         id:      nil,
@@ -22,7 +24,29 @@ defmodule Herald.Message do
       }
 
       import Herald.Message
+    end
+  end
 
+  defmacro payload(do: block) do
+    block
+  end
+
+  defmacro field(name, type, opts \\ []) do
+    quote do
+      name = unquote(name)
+      type = unquote(type)
+      opts = unquote(opts)
+
+      if Keyword.get(opts, :required, false) do
+        @required [name | @required]
+      end
+
+      @schema Map.put(@schema, name, type)
+    end
+  end
+
+  defmacro __before_compile__(_env) do
+    quote do
       @doc """
       Create new message and validate their payload
       """
@@ -43,24 +67,6 @@ defmodule Herald.Message do
           Map.put(message, :id, Keyword.get(opts, :id))
         end
       end
-    end
-  end
-
-  defmacro payload(do: block) do
-    block
-  end
-
-  defmacro field(name, type, opts \\ []) do
-    quote do
-      name = unquote(name)
-      type = unquote(type)
-      opts = unquote(opts)
-
-      if Keyword.get(opts, :required, false) do
-        @required [name | @required]
-      end
-
-      @schema Map.put(@schema, name, type)
     end
   end
 end
