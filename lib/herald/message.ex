@@ -23,6 +23,7 @@ defmodule Herald.Message do
         valid?:  boolean()
       }
 
+      import Ecto.Changeset
       import Herald.Message
     end
   end
@@ -56,6 +57,7 @@ defmodule Herald.Message do
         |> set_message_id(opts)
         |> Map.put(:queue, queue)
         |> Map.put(:payload, payload)
+        |> validate_payload()
       end
 
       defp set_message_id(%__MODULE__{} = message, opts) do
@@ -66,6 +68,18 @@ defmodule Herald.Message do
         else
           Map.put(message, :id, Keyword.get(opts, :id))
         end
+      end
+
+      defp validate_payload(%__MODULE__{payload: payload} = message) do
+        %{valid?: valid, errors: errors, changes: changes} =
+          {Map.new(), @schema}
+          |> cast(payload, Map.keys(@schema))
+          |> validate_required(@required)
+
+        message
+        |> Map.put(:valid?, valid)
+        |> Map.put(:errors, errors)
+        |> Map.put(:payload, payload)
       end
     end
   end
