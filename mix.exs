@@ -26,6 +26,7 @@ defmodule Herald.MixProject do
       {:ecto, "~> 3.2"},
       {:jason, "~> 1.1"},
       {:amqp, "~> 1.3"},
+      {:gen_stage, "~> 0.14"},
 
       # Development dependencies
       {:ex_doc, "~> 0.21", only: :dev, runtime: false},
