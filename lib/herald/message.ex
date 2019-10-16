@@ -1,23 +1,23 @@
 defmodule Herald.Message do
-  @derive Jason.Encoder
-  defstruct [
-    id:      nil,
-    queue:   nil,
-    errors:  [],
-    payload: nil
-  ]
-
-  @type t :: %__MODULE__{
-    id:      UUID.t(),
-    queue:   binary(),
-    payload: map()
-  }
-
   @doc false
   defmacro __using__(_opts) do
     quote do
       @schema %{}
       @required []
+
+      @derive Jason.Encoder
+      defstruct [
+        id:      nil,
+        queue:   nil,
+        errors:  [],
+        payload: nil
+      ]
+
+      @type t :: %__MODULE__{
+        id:      UUID.t(),
+        queue:   binary(),
+        payload: map()
+      }
 
       import Herald.Message
 
