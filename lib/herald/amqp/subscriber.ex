@@ -8,6 +8,9 @@ defmodule Herald.AMQP.Subscriber do
     {:ok, conn} = Connection.open(host: "broker") # TODO: GET FROM CONFIG
     {:ok, chan} = Channel.open(conn)
     {:ok, _}    = Queue.declare(chan, queue, durable: true)
+    
+    AMQP.Exchange.declare(chan, "#{queue}_exchange")
+    AMQP.Queue.bind(chan, queue, "#{queue}_exchange")
 
     {:ok, _consumer_tag} = Basic.consume(chan, queue)
 
