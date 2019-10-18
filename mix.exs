@@ -4,15 +4,17 @@ defmodule Herald.MixProject do
   def project do
     [
       app: :herald,
-      version: "0.1.0",
+      version: "0.1.0-alpha.1",
       elixir: "~> 1.8",
       start_permanent: Mix.env() == :prod,
       description: "Library to validate and exchange messages",
-      links: %{
-        github: "https://github.com/radsquare/herald"
-      },
-      licenses: ["MIT"],
-      deps: deps()
+      package: [
+        links: %{
+          github: "https://github.com/radsquare/herald"
+        },
+        licenses: ["MIT"],
+        deps: deps()
+      ]
     ]
   end
 
