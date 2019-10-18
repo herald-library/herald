@@ -61,6 +61,22 @@ defmodule Herald.Message do
         |> validate_payload()
       end
 
+      @doc """
+      Create new message from a JSON string
+
+      Basicaly, its decode the JSON and forward it to `new/3`
+      """
+      @spec from_string(binary(), map(), any()) :: t()
+      def from_string(queue, payload, opts \\ []) do
+        case Jason.decode(payload) do
+          {:ok, decoded} ->
+            new(queue, decoded, opts)
+
+          another ->
+            another
+        end
+      end
+
       defp set_message_id(%__MODULE__{} = message, opts) do
         Keyword.get(opts, :id)
         |> is_nil()
