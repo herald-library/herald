@@ -6,10 +6,19 @@ defmodule Herald.Application do
   use Application
 
   def start(_type, _args) do
-    children = [
-      # Starts a worker by calling: Herald.Worker.start_link(arg)
-      # {Herald.Worker, arg}
-    ]
+    children = 
+      Application.get_env(:herald, :router)
+      |> apply(:routes, [])
+      |> Enum.map(fn {queue, _} = route_spec ->
+        %{
+          id: String.to_atom(queue),
+          start: {
+            Herald.AMQP.Subscriber,
+            :start_link,
+            [route_spec]
+          }
+        }
+      end)
 
     # See https://hexdocs.pm/elixir/Supervisor.html
     # for other strategies and supported options
