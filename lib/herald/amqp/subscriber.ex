@@ -38,7 +38,10 @@ defmodule Herald.AMQP.Subscriber do
     {:noreply, state}
   end
 
-  def handle_info({:basic_deliver, payload, meta = %{message_id: message_id}}, %{queue: queue, schema: schema} = state) do
+  def handle_info(
+    {:basic_deliver, payload, meta = %{delivery_tag: tag, message_id: message_id}},
+    %{queue: queue, schema: schema} = state
+  ) do
     call_args = 
       case message_id do
         :undefined -> [queue, payload]
@@ -52,7 +55,7 @@ defmodule Herald.AMQP.Subscriber do
         Logger.debug("Parsed message #{inspect(message)}")
         Logger.info("Sending #{message_id} for processing")
 
-        process_message(message, state)
+        process_message(message, tag, state)
 
         {:noreply, state}
 
@@ -69,8 +72,50 @@ defmodule Herald.AMQP.Subscriber do
     end
   end
 
-  defp process_message(%{id: message_id} = message, %{processor: function}) do
+  defp process_message(%{id: message_id} = message, tag, %{channel: chan, processor: function}) do
     Logger.info("Calling #{inspect(function)} for message #{message_id}")
-    function.(message)
+
+    case function.(message) do
+      {:ok, _} ->
+        Logger.info("Processor for #{message_id} returns ok. Acknowledging")
+        
+        case Basic.ack(chan, tag) do
+          :ok -> 
+            Logger.info("Message #{message_id} acknowled")
+
+          {:error, reason} ->
+            Logger.error("Error #{inspect(reason)} when ack message #{message_id}")
+        end
+
+      {:error, reason} ->
+        Logger.info("Processor for #{message_id} returns error #{reason}")
+
+        case Basic.reject(chan, tag) do
+          :ok -> 
+            Logger.info("Message #{message_id} rejected")
+
+          {:error, reason} ->
+            Logger.error("Error #{inspect(reason)} when reject message #{message_id}")
+        end
+
+      {:error, :do_not_requeue, reason} ->
+        Logger.warn("Processor for #{message_id} returns error #{reason}")
+        Logger.warn("Dont requeue message #{message_id}")
+
+        case Basic.reject(chan, tag, requeue: false) do
+          :ok -> 
+            Logger.info("Message #{message_id} rejected and not requeue")
+
+          {:error, reason} ->
+            Logger.error("Error #{inspect(reason)} when reject message #{message_id}")
+        end
+
+      another ->
+        raise """
+        Receiving invalid result #{inspect(another)} from processor #{inspect(function)}
+
+        Processors return must match with {:ok, _}, {:error, _} or {:error, :discart, _}
+        """
+    end
   end
 end
