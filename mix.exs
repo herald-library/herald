@@ -12,9 +12,9 @@ defmodule Herald.MixProject do
         links: %{
           github: "https://github.com/radsquare/herald"
         },
-        licenses: ["MIT"],
-        deps: deps()
-      ]
+        licenses: ["MIT"]
+      ],
+      deps: deps()
     ]
   end
 
