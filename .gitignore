@@ -27,3 +27,6 @@ lib/develop/*.ex
 
 # Logs directory
 log/*
+
+# Ignore config.exs
+config.exs
