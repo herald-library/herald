@@ -10,9 +10,8 @@ defmodule Herald.MixProject do
       description: "Library to validate and exchange messages",
       links: %{
         github: "https://github.com/radsquare/herald"
-      }
+      },
       licenses: ["MIT"],
-
       deps: deps()
     ]
   end
