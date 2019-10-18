@@ -1,0 +1,30 @@
+version: '3'
+
+networks:
+  herald: {}
+
+services:
+  broker:
+    dns:
+    - 8.8.8.8
+    - 9.9.9.9
+    networks:
+    - herald
+    ports:
+    - 15672:15672
+    image: rabbitmq:3-management-alpine
+
+  application:
+    dns:
+    - 8.8.8.8
+    - 9.9.9.9
+    depends_on:
+    - broker
+    networks:
+    - herald
+    volumes:
+    - .:/srv/app
+    build:
+      context: '.'
+      dockerfile: Dockerfile
+    command: tail -f /dev/null

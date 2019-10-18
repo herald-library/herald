@@ -22,3 +22,11 @@ erl_crash.dump
 # Ignore package tarball (built via "mix hex.build").
 herald-*.tar
 
+# Add fields with development examples
+lib/develop/*.ex
+
+# Logs directory
+log/*
+
+# Ignore config.exs
+config.exs

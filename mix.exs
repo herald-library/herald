@@ -4,9 +4,16 @@ defmodule Herald.MixProject do
   def project do
     [
       app: :herald,
-      version: "0.1.0",
-      elixir: "~> 1.9",
+      version: "0.1.0-alpha.1",
+      elixir: "~> 1.8",
       start_permanent: Mix.env() == :prod,
+      description: "Library to validate and exchange messages",
+      package: [
+        links: %{
+          github: "https://github.com/radsquare/herald"
+        },
+        licenses: ["MIT"]
+      ],
       deps: deps()
     ]
   end
@@ -22,8 +29,14 @@ defmodule Herald.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      # {:dep_from_hexpm, "~> 0.3.0"},
-      # {:dep_from_git, git: "https://github.com/elixir-lang/my_dep.git", tag: "0.1.0"}
+      {:uuid, "~> 1.1"},
+      {:ecto, "~> 3.2"},
+      {:jason, "~> 1.1"},
+      {:amqp, "~> 1.3"},
+      {:gen_stage, "~> 0.14"},
+
+      # Development dependencies
+      {:ex_doc, "~> 0.21", only: :dev, runtime: false},
     ]
   end
 end
