@@ -23,7 +23,7 @@ erl_crash.dump
 herald-*.tar
 
 # Add fields with development examples
-lib/develop/*.ex
+lib/develop/
 
 # Logs directory
 log/*
