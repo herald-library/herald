@@ -48,7 +48,9 @@ defmodule Herald.AMQP.Connection do
     get_conn_opts()
     |> AMQP.Connection.open()
     |> case do
-      {:ok, conn} -> 
+      {:ok, %{pid: pid} = conn} -> 
+        Process.link(pid)
+
         {:ok, {conn, %{}}}
 
       {:error, _reason} ->
