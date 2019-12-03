@@ -1,4 +1,46 @@
 defmodule Herald.Router do
+  @moduledoc """
+  Provides the routes DSL.
+
+  Routes is a way trought Herald know:
+
+  * Which Message Schema uses to encode a
+  message before send it;
+
+  * Which function must be used to process
+  a message when receives
+
+  An router must be implemented as a module of your
+  application, as bellow:
+
+  ```elixir
+  defmodule MyApp.Router do
+    use Herald.Router
+  
+    route "my_queue1",
+      schema: MyApp.Message1,
+      processor: &MyApp.Message1.my_processor/1
+
+    route "my_queue2",
+      schema: MyApp.Message2,
+      processor: &MyApp.Message2.my_processor/1
+  end
+  ```
+
+  Each application using Herald must have only one
+  router.
+  
+  You need configure what your Router in application
+  configurations, as bellow:
+
+  ```elixir
+  config :herald,
+    router: MyApp.Router
+  ```
+
+  For more details, see `route/2`
+  """
+
   defmacro __using__(_opts) do
     quote do
       @routes %{}
@@ -9,7 +51,22 @@ defmodule Herald.Router do
     end
   end
 
-  defmacro route(queue, [schema: schema, processor: processor]) do
+  @doc """
+  Defines a `config` for a given `queue`.
+
+  ### Config fields
+
+  * `schema` - Represents a `struct` using
+  `Herald.Message` which will be used to 
+  represent any message received in `queue`;
+
+  * `processor` - Represents a function
+  which will process messages received in
+  `queue`.
+
+  For more details, see the [module doc](#content).
+  """
+  defmacro route(queue, _config = [schema: schema, processor: processor]) do
     quote do
       queue     = unquote(queue)
       schema    = unquote(schema)
