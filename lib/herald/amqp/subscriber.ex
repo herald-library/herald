@@ -4,6 +4,7 @@ defmodule Herald.AMQP.Subscriber do
 
   require Logger
 
+  @doc false
   def init({queue, {schema, processor}} = args) do
     {:ok, conn} = Connection.open(host: "broker") # TODO: GET FROM CONFIG
     {:ok, chan} = Channel.open(conn)
@@ -22,25 +23,27 @@ defmodule Herald.AMQP.Subscriber do
     }}
   end
 
+  @doc false
   def start_link(args) do
     GenServer.start_link(__MODULE__, args, [])
   end
 
-  # Confirmation sent by the broker after registering this process as a consumer
+  @doc false
   def handle_info({:basic_consume_ok, _meta}, state) do
     {:noreply, state}
   end
 
-  # Sent by the broker when the consumer is unexpectedly cancelled (such as after a queue deletion)
+  @doc false
   def handle_info({:basic_cancel, _meta}, state) do
     {:stop, :normal, state}
   end
 
-  # Confirmation sent by the broker to the consumer process after a Basic.cancel
+  @doc false
   def handle_info({:basic_cancel_ok, _meta}, state) do
     {:noreply, state}
   end
 
+  @doc false
   def handle_info(
     {:basic_deliver, payload, meta = %{delivery_tag: tag, message_id: message_id}},
     %{queue: queue, schema: schema} = state
