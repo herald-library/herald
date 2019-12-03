@@ -1,4 +1,48 @@
 defmodule Herald.Message do
+  @moduledoc """
+  Defines a Message.
+
+  Message is a struct which represents data
+  exchanged using a Broker queue.
+
+  Any message which you expect receive or send
+  in your application must be represented by a module,
+  and this module must `use/2` `Herald.Message`
+  and defines a `payload/1` for the represented
+  message, as bellow:
+
+  ```
+  defmodule MyApp.UserRegistered do
+    use Herald.Message
+
+    payload do
+      field :age,  :integer
+      field :name, :string, required: true
+    end
+  end
+  ```
+
+  Any received Message is converted in a struct
+  with the following fields:
+
+    * `id` - A unique UUID for message. Can
+    be used to filter duplicated messages;
+
+    * `queue` - The queue where this message
+    is received of will be sent;
+
+    * `payload` - Content of message. Should be
+    equals the payload defined by `payload/3`;
+
+    * `valid?` - Indicates if message is valid,
+    eg, with all fields have correct type, and
+    if required fields are present.
+
+  For understand how Herald defines which Message
+  uses to represents a received message,
+  see `Herald.Router`.
+  """
+
   @doc false
   defmacro __using__(_opts) do
     quote do
@@ -28,10 +72,26 @@ defmodule Herald.Message do
     end
   end
 
+  @doc """
+  Defines the valid payload for a
+  message, i.e. wrap all `field/3` calls
+  """
   defmacro payload(do: block) do
     block
   end
 
+  @doc """
+  Defines a field of payload.
+
+  Fields receives a `name`, `type`, and
+  can have aditional options.
+
+  ### Options
+
+  * `required` - A `boolean` indicating
+  if field is required to be present or
+  not.
+  """
   defmacro field(name, type, opts \\ []) do
     quote do
       name = unquote(name)
