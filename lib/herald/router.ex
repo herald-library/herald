@@ -75,13 +75,32 @@ defmodule Herald.Router do
       @routes Map.put(@routes, queue, {schema,processor})
     end
   end
+  defmacro route(queue, _config = [schema: schema]) do
+    quote do
+      queue     = unquote(queue)
+      schema    = unquote(schema)
+      processor = :empty
+
+      @routes Map.put(@routes, queue, {schema,processor})
+    end
+  end
   defmacro route(_, _) do
     raise """
-      Invalid route! A example of correct route as bellow:
+      Invalid route!
 
-      route "queue",
-        schema: MyApp.MessageSchema,
-        processor: &MyApp.MessageSchema.func/1
+      A correct route must includes a queue name and
+      schema to represent it, as bellow:
+
+        route "queue",
+          schema: MyApp.MessageSchema
+
+      Additionally, it can includes a processor function,
+      to indicates processor of messages received in that
+      queue:
+
+        route "queue",
+          schema: MyApp.MessageSchema,
+          processor: &MyApp.MessageSchema.func/1
     """
   end
 
