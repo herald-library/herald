@@ -14,7 +14,10 @@ defmodule Herald.AMQP.Connection do
   def init(:ok) do
     children = get_children()
 
-    Supervisor.start_link(children, strategy: :one_for_one, name: MyApp.ConsumerSupervisor)
+    Supervisor.start_link(children, [
+      strategy: :one_for_one,
+      name: Herald.AMQP.Supervisor
+    ])
     
     connect(@max_attemps)
   end
@@ -51,7 +54,7 @@ defmodule Herald.AMQP.Connection do
       {:ok, %{pid: pid} = conn} -> 
         Process.link(pid)
 
-        {:ok, {conn, %{}}}
+        {:ok, conn}
 
       {:error, _reason} ->
         if attempt > 0 do
@@ -102,5 +105,21 @@ defmodule Herald.AMQP.Connection do
   end
   defp put_conn_opts(info, key, value) do
     Keyword.put(info, key, value)
+  end
+
+  def request_channel(module) do
+    GenServer.cast(__MODULE__, {:get_channel, module})
+  end
+
+  def handle_cast({:get_channel, module}, conn) do
+    case Channel.open(conn) do
+      {:ok, channel} ->
+        module.channel_created(channel)
+
+        {:noreply, {conn, channel}}
+
+      {:error, reason} ->
+        {:error, reason}
+    end
   end
 end
