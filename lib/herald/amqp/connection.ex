@@ -54,7 +54,7 @@ defmodule Herald.AMQP.Connection do
       {:ok, %{pid: pid} = conn} -> 
         Process.link(pid)
 
-        {:ok, conn}
+        {:ok, %{conn: conn, channel: nil}}
 
       {:error, _reason} ->
         if attempt > 0 do
@@ -111,15 +111,20 @@ defmodule Herald.AMQP.Connection do
     GenServer.cast(__MODULE__, {:get_channel, module})
   end
 
-  def handle_cast({:get_channel, module}, conn) do
+  def handle_cast({:get_channel, module}, %{conn: conn, channel: nil}) do
     case Channel.open(conn) do
       {:ok, channel} ->
         module.channel_created(channel)
 
-        {:noreply, {conn, channel}}
+        {:noreply, %{conn: conn, channel: channel}}
 
       {:error, reason} ->
         {:error, reason}
     end
+  end
+  def handle_cast({:get_channel, module}, %{conn: conn, channel: channel}) do
+    module.channel_created(channel)
+
+    {:noreply, %{conn: conn, channel: channel}}
   end
 end
