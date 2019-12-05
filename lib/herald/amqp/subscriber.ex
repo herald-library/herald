@@ -12,7 +12,11 @@ defmodule Herald.AMQP.Subscriber do
   def init({queue, {schema, processor}} = _config) do
     ConnManager.request_channel(queue)
 
-    {:ok, {queue, schema, processor}}
+    {:ok, %{
+      queue: queue,
+      schema: schema,
+      processor: processor
+    }}
   end
 
   @doc false
@@ -26,7 +30,7 @@ defmodule Herald.AMQP.Subscriber do
   def handle_cast({:channel_created, channel}, state) do
     bind_to_queue(channel, state)
 
-    {:noreply, state}
+    {:noreply, Map.put(state, :channel, channel)}
   end
 
   @doc false
@@ -37,7 +41,7 @@ defmodule Herald.AMQP.Subscriber do
   end
 
   @doc false
-  def handle_info({:basic_deliver, payload, meta}, {queue, _, _} = state) do
+  def handle_info({:basic_deliver, payload, meta}, %{queue: queue, channel: channel} = state) do
     Logger.debug("Received a message in queue #{queue}")
 
     Processing.perform(:amqp, payload, state, meta)
@@ -45,7 +49,7 @@ defmodule Herald.AMQP.Subscriber do
     {:noreply, state}
   end
 
-  defp bind_to_queue(channel, {queue, schema, processor}) do
+  defp bind_to_queue(channel, %{queue: queue, schema: schema, processor: processor}) do
     setup_queue(channel, queue)
 
     case Basic.consume(channel, queue) do
