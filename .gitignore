@@ -30,3 +30,6 @@ log/*
 
 # Ignore config.exs
 config.exs
+
+# Ignore example path
+example/*
