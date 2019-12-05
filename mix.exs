@@ -4,7 +4,7 @@ defmodule Herald.MixProject do
   def project do
     [
       app: :herald,
-      version: "0.1.0-alpha.1",
+      version: "0.1.0-beta.2",
       elixir: "~> 1.8",
       start_permanent: Mix.env() == :prod,
       description: "Library to validate and exchange messages",
