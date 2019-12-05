@@ -4,6 +4,8 @@ defmodule Herald.AMQP.Subscriber do
   use AMQP
   use GenServer
 
+  alias Herald.Message.Processing
+
   alias Herald.AMQP.Connection, as: ConnManager
 
   @doc false
@@ -35,8 +37,10 @@ defmodule Herald.AMQP.Subscriber do
   end
 
   @doc false
-  def handle_info({:basic_deliver, payload, %{redelivered: redelivered}}, {queue, _, _} = state) do
+  def handle_info({:basic_deliver, payload, meta}, {queue, _, _} = state) do
     Logger.debug("Received a message in queue #{queue}")
+
+    Processing.perform(:amqp, payload, state, meta)
 
     {:noreply, state}
   end
