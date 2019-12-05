@@ -8,7 +8,9 @@ defmodule Herald.AMQP.Connection do
   @max_attemps 10
 
   def start_link(_opts) do
-    GenServer.start_link(__MODULE__, :ok, [name: __MODULE__])
+    GenServer.start_link(__MODULE__, :ok, [
+      name: __MODULE__
+    ])
   end
 
   def init(:ok) do
@@ -107,14 +109,14 @@ defmodule Herald.AMQP.Connection do
     Keyword.put(info, key, value)
   end
 
-  def request_channel(module) do
-    GenServer.cast(__MODULE__, {:get_channel, module})
+  def request_channel(queue) do
+    GenServer.cast(__MODULE__, {:get_channel, queue})
   end
 
-  def handle_cast({:get_channel, module}, %{conn: conn, channel: nil}) do
+  def handle_cast({:get_channel, queue}, %{conn: conn, channel: nil}) do
     case Channel.open(conn) do
       {:ok, channel} ->
-        module.channel_created(channel)
+        GenServer.cast(String.to_atom(queue), {:channel_created, channel})
 
         {:noreply, %{conn: conn, channel: channel}}
 
@@ -122,8 +124,8 @@ defmodule Herald.AMQP.Connection do
         {:error, reason}
     end
   end
-  def handle_cast({:get_channel, module}, %{conn: conn, channel: channel}) do
-    module.channel_created(channel)
+  def handle_cast({:get_channel, queue}, %{conn: conn, channel: channel}) do
+    GenServer.cast(String.to_atom(queue), {:channel_created, channel})
 
     {:noreply, %{conn: conn, channel: channel}}
   end
