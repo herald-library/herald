@@ -40,7 +40,7 @@ defmodule Herald.Message.Processing do
     {:error, :invalid_message}
   end
   defp call_processor(%{id: message_id, valid?: true} = message, processor) do
-    Logger.info("Calling function #{processor} for #{message_id}")
+    Logger.info("Calling processor for #{message_id}")
 
     case processor.(message) do
       result = {:ok, _} ->
