@@ -158,6 +158,10 @@ defmodule Herald.Message do
         |> Map.put(:errors, errors)
         |> Map.put(:payload, changes)
       end
+
+      if Mix.env() == :test do
+        def schema(), do: @schema
+      end
     end
   end
 end
