@@ -41,7 +41,8 @@ defmodule Herald.MixProject do
       {:amqp, "~> 1.3"},
       {:gen_stage, "~> 0.11"},
 
-      # Development dependencies
+      # Development or test dependencies
+      {:faker, "~> 0.13",  only: :test},
       {:ex_doc, "~> 0.21", only: :dev, runtime: false},
     ]
   end
