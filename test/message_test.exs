@@ -9,7 +9,7 @@ defmodule Herald.MessageTest do
     }
   end
 
-  describe "from_string" do
+  describe "function from_string" do
     setup do
       [json: """
         {
@@ -43,7 +43,7 @@ defmodule Herald.MessageTest do
     end
   end
 
-  describe "new" do
+  describe "function new" do
     test "shoud validate required data" do
       message = Herald.TestMessage.new("queue", %{})
 
