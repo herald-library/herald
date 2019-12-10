@@ -54,4 +54,33 @@ defmodule Herald.RouterTest do
         end)
     end
   end
+
+  describe "when compile a module using this" do
+    test "should raise error when :schema is not declared" do
+      assert_raise Herald.Errors.InvalidRoute, fn ->
+        Code.eval_quoted(quote do
+          defmodule InvalidRouter do
+            use Herald.Router
+
+            route "queue",
+              processor: fn _ -> :error end
+          end
+        end)
+      end
+    end
+
+    test "should raise error when :processor is not a function" do
+      assert_raise Herald.Errors.InvalidRouteProcessor, fn ->
+        Code.eval_quoted(quote do
+          defmodule InvalidRouter do
+            use Herald.Router
+
+            route "queue",
+              schema: Herald.TestMessage,
+              processor: Enum.random(["string", :atom, 1_000_000])
+          end
+        end)
+      end
+    end
+  end
 end

@@ -41,6 +41,9 @@ defmodule Herald.Router do
   For more details, see `route/2`
   """
 
+  alias Herald.Errors.InvalidRoute
+  alias Herald.Errors.InvalidRouteProcessor
+
   defmacro __using__(_opts) do
     quote do
       @routes %{}
@@ -72,6 +75,11 @@ defmodule Herald.Router do
       schema    = unquote(schema)
       processor = unquote(processor)
 
+      if not is_function(processor) do
+        raise InvalidRouteProcessor,
+          message: "Invalid processor! Processor must be a function"
+      end
+
       @routes Map.put(@routes, queue, {schema,processor})
     end
   end
@@ -85,7 +93,7 @@ defmodule Herald.Router do
     end
   end
   defmacro route(_, _) do
-    raise """
+    raise InvalidRoute, message: """
       Invalid route!
 
       A correct route must includes a queue name and
