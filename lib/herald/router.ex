@@ -115,6 +115,16 @@ defmodule Herald.Router do
   defmacro __before_compile__(_env) do
     quote do
       def routes(), do: @routes
+
+      def get_queue_route(queue) do
+        case Map.get(@routes, queue) do
+          nil ->
+            {:error, :queue_with_no_routes}
+
+          route ->
+            {:ok, route}
+        end
+      end
     end
   end
 end

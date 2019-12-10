@@ -2,7 +2,11 @@ defmodule Herald.RouterTest do
   use ExUnit.Case, async: true
 
   setup do
-    [routes: Herald.TestRouter.routes()]
+    [router: Herald.TestRouter]
+  end
+
+  setup %{router: router} do
+    [routes: router.routes()]
   end
 
   setup %{routes: routes} do
@@ -81,6 +85,18 @@ defmodule Herald.RouterTest do
           end
         end)
       end
+    end
+  end
+
+  describe "function get_queue_route" do
+    test "should return {:ok, route} when route exists", %{router: router} do
+      assert router.get_queue_route("with_processor")
+      |> Kernel.==({:ok, {Herald.TestMessage, &Herald.TestMessage.processor/1}})
+    end
+
+    test "should return {:error, :queue_with_no_routes} when route does not exists", %{router: router} do
+      assert router.get_queue_route("inexistent")
+      |> Kernel.==({:error, :queue_with_no_routes})
     end
   end
 end
