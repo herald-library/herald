@@ -6,4 +6,8 @@ defmodule Herald.TestMessage do
     field :name, :string
     field :age,  :integer, required: true
   end
+
+  def processor(message) do
+    {:ok, message}
+  end
 end
