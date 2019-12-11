@@ -1,5 +1,7 @@
 # Herald
 
+![](https://github.com/radsquare/herald/workflows/Elixir%20CI/badge.svg)
+
 Herald is a library to exchange async messages between systems through a message broker.
 
 These library support AMQP based message brokers
