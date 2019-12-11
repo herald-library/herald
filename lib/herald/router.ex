@@ -30,8 +30,8 @@ defmodule Herald.Router do
   Each application using Herald must have only one
   router.
   
-  You need configure what your Router in application
-  configurations, as bellow:
+  You need to inform Herald where is your Router
+  using application configurations, as bellow:
 
   ```elixir
   config :herald,

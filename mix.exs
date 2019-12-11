@@ -4,7 +4,7 @@ defmodule Herald.MixProject do
   def project do
     [
       app: :herald,
-      version: "0.1.0-beta.4",
+      version: "0.1.0-beta.5",
       elixir: "~> 1.8",
       start_permanent: Mix.env() == :prod,
       description: "Library to validate and exchange messages",
@@ -15,6 +15,7 @@ defmodule Herald.MixProject do
         },
         licenses: ["MIT"]
       ],
+      docs: docs(),
       deps: deps()
     ]
   end
@@ -42,6 +43,17 @@ defmodule Herald.MixProject do
       # Development or test dependencies
       {:faker, "~> 0.13",  only: :test},
       {:ex_doc, "~> 0.21", only: :dev, runtime: false},
+    ]
+  end
+
+  def docs() do
+    [
+      extra_section: "GUIDES",
+      main: "1-quick-start",
+      extras: [
+        "guides/1-quick-start.md",
+        "guides/2-concepts.md"
+      ]
     ]
   end
 end

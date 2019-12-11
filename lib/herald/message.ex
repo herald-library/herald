@@ -1,8 +1,8 @@
 defmodule Herald.Message do
   @moduledoc """
-  Defines a Message.
+  Defines the behaviour to Message Schemas.
 
-  Message is a struct which represents data
+  Message Schemas are the structs which represents data
   exchanged using a Broker queue.
 
   Any message which you expect receive or send
@@ -22,8 +22,8 @@ defmodule Herald.Message do
   end
   ```
 
-  Any received Message is converted in a struct
-  with the following fields:
+  Each message received in the broker is
+  converted in a struct with the following fields:
 
     * `id` - A unique UUID for message. Can
     be used to filter duplicated messages;
@@ -31,15 +31,17 @@ defmodule Herald.Message do
     * `queue` - The queue where this message
     is received of will be sent;
 
-    * `payload` - Content of message. Should be
-    equals the payload defined by `payload/3`;
+    * `payload` - Content of message, represented
+    by a map of atom keys, and defined by `payload/3`
+    call in module definition;
 
     * `valid?` - Indicates if message is valid,
     eg, with all fields have correct type, and
     if required fields are present.
 
-  For understand how Herald defines which Message
-  uses to represents a received message,
+  The definition of which Message Schema will be
+  used to represents a message received from broker
+  must be created in Router. More details,
   see `Herald.Router`.
   """
 

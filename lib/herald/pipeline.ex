@@ -5,9 +5,10 @@ defmodule Herald.Pipeline do
   All message processing is started by function `run/3`. 
 
   When `run/3` receives a message, it runs the following steps:
-  * *pre_processing* - Will convert the message to a struct, using 
+  * **pre_processing** - Will convert the message to a struct, using 
   the schema defined in route for the given queue;
-  * *processor_caler* - Will call the `processor` defined in router for
+
+  * **processor_caler** - Will call the `processor` defined in router for
   the given queue.
   """
 
@@ -27,6 +28,9 @@ defmodule Herald.Pipeline do
   * `queue` - The queue where message was received from;
   * `message` - The received message in a raw 
   state (i.e. the String as received from broker)
+
+  This function must be called by plugins integrating
+  Herald with Brokers.
 
   *Warning:* When you call this function without
   [configure a router](Herald.Router.html) for you
