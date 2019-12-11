@@ -34,7 +34,6 @@ defmodule Herald.Pipeline do
         message
         |> pre_processor(queue, router)
         |> processor_caller()
-        |> post_processor()
     end
   end
 
@@ -56,14 +55,7 @@ defmodule Herald.Pipeline do
       message
       |> processor.()
 
-    pipeline
-    |> Map.put(:caller_result, result)
-  end
 
-  defp post_processor(%{caller_result: result} = pipeline) do
-    case result do
-      {:ok, _} -> :ok
-      {:error, reason} -> :error
-    end
+    Map.put(pipeline, :caller_result, result)
   end
 end
