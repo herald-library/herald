@@ -38,8 +38,6 @@ defmodule Herald.MixProject do
       {:uuid, "~> 1.1"},
       {:ecto, "~> 3.2"},
       {:jason, "~> 1.1"},
-      {:amqp, "~> 1.3"},
-      {:gen_stage, "~> 0.11"},
 
       # Development or test dependencies
       {:faker, "~> 0.13",  only: :test},
