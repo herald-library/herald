@@ -37,8 +37,8 @@ defmodule Herald.Pipeline do
   application, it will raises the exception
   `Herald.Errors.MissingRouter`
   """
-  @spec run(String.t(), String.t(), String.t()) :: :ok | {:error, atom()}
-  def run(queue, message, opts \\ []) do
+  @spec run(String.t(), String.t()) :: :ok | {:error, atom()}
+  def run(queue, message) do
     Application.get_env(:herald, :router)
     |> case do
       router when is_nil(router) ->
