@@ -2,9 +2,9 @@ defmodule Herald.Pipeline do
   @moduledoc """
   Pipeline is where messages are processed.
 
-  All message processing is started by function `run/3`. 
+  All message processing is started by function `run/2`. 
 
-  When `run/3` receives a message, it runs the following steps:
+  When `run/2` receives a message, it runs the following steps:
   * **pre_processing** - Will convert the message to a struct, using 
   the schema defined in route for the given queue;
 
@@ -16,10 +16,35 @@ defmodule Herald.Pipeline do
 
   defstruct [
     :schema,
-    :processor,
     :message,
-    :caller_result
+    :perform,
+    :processor,
+
+    result: :uncalled,
   ]
+
+  @typedoc """
+  Indicates to upper layers what must do doing with message.
+
+  Possible values:
+  * `:ack` - When the message is sucessfully processed;
+  * `:delete` - When message must be deleted from broker
+  after a processing error;
+  * `:requeue` - When message must be reprocessed in
+  future after a processing error.
+  """
+  @type to_perform :: 
+    :ack |
+    :delete |
+    :requeue 
+
+  @type t :: %__MODULE__{
+    schema:    atom(),
+    message:   map(),
+    result:    any(),
+    processor: fun(),
+    perform:   to_perform(),
+  }
 
   @doc """
   Process a given message.
@@ -74,11 +99,24 @@ defmodule Herald.Pipeline do
     end
   end
 
+  defp processor_caller(%{message: {:error, _reason}} = pipeline),
+    do: Map.put(pipeline, :perform, :requeue)
   defp processor_caller(%{message: message, processor: processor} = pipeline) do
-    result = 
-      message
-      |> processor.()
+    case processor.(message) do
+      {:ok, _} = result ->
+        pipeline
+        |> Map.put(:perform, :ack)
+        |> Map.put(:result, result)
 
-    Map.put(pipeline, :caller_result, result)
+      {:error, :delete, _} = result ->
+        pipeline
+        |> Map.put(:result, result)
+        |> Map.put(:perform, :delete)
+
+      {:error, _} = result ->
+        pipeline
+        |> Map.put(:result, result)
+        |> Map.put(:perform, :requeue)
+    end
   end
 end
