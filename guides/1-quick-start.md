@@ -65,6 +65,14 @@ defmodule MyApp.UserMessage do
 end
 ```
 
+### Processor return
+
+The processor function return must match with one of the following expressions:
+
+* `{:ok, _}` - When desired operation is processed with success. Message will be acknowledged in broker, if needed;
+* `{:error, _}` - When processor don't reached the desired result. Message will be rejected in broker;
+* `{:error. :delete, _}` - The same of `{:error, _}`, but message will be deleted from broker, if needed.
+
 ## Create Router
 
 Router will tell for Herald what Message Schema and processor use for process each message received.

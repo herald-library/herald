@@ -58,7 +58,7 @@ See `Herald.Router` for more details.
 
 ## Message Pipeline
 
-The message pipeline is the central component of Herald, exposed by the function `Herald.Pipeline.run/3`, and called by [Herald AMQP](https://hexdocs.pm/herald_amqp) and [Herald SQS](https://hexdocs.pm/herald_sqs) to process messages.
+The message pipeline is the central component of Herald, exposed by the function `Herald.Pipeline.run/2`, and called by [Herald AMQP](https://hexdocs.pm/herald_amqp) and [Herald SQS](https://hexdocs.pm/herald_sqs) to process messages.
 
 Basically, this function will receive a raw message and the queue where it originated, and will:
 
@@ -67,6 +67,6 @@ Basically, this function will receive a raw message and the queue where it origi
 * Once message is decoded, send it to their processor;
 * Returns to the caller function
 
-If you want to develop a plugin to integrate Herald with a message broker, the function `Herald.Pipeline.run/3` will be the point of integration of your plugin with Herald Core.
+If you want to develop a plugin to integrate Herald with a message broker, the function `Herald.Pipeline.run/2` will be the point of integration of your plugin with Herald Core.
 
 See `Herald.Pipeline` for more details.
