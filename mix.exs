@@ -39,6 +39,7 @@ defmodule Herald.MixProject do
       {:uuid, "~> 1.1"},
       {:ecto, "~> 3.2"},
       {:jason, "~> 1.1"},
+      {:poolboy, "~> 1.5"},
 
       # Development or test dependencies
       {:faker, "~> 0.13",  only: :test},
