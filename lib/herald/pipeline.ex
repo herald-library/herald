@@ -12,6 +12,10 @@ defmodule Herald.Pipeline do
   the given queue.
   """
 
+  use GenServer
+
+  require Logger
+
   alias Herald.Errors.MissingRouter
 
   defstruct [
@@ -45,6 +49,17 @@ defmodule Herald.Pipeline do
     processor: fun(),
     perform:   to_perform(),
   }
+
+  @doc false
+  def start_link(_),
+    do: GenServer.start_link(__MODULE__, nil)
+
+  @doc false
+  def init(_), do: {:ok, nil}
+
+  @doc "call the function run/2"
+  def handle_call({:run, queue, message}, _from, state),
+    do: {:reply, run(queue, message), state}
 
   @doc """
   Process a given message.
