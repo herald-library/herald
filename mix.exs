@@ -44,6 +44,7 @@ defmodule Herald.MixProject do
       # Development or test dependencies
       {:faker, "~> 0.13",  only: :test},
       {:ex_doc, "~> 0.21", only: :dev, runtime: false},
+      {:mix_test_watch, "~> 1.0", only: :test, runtime: false}
     ]
   end
 
