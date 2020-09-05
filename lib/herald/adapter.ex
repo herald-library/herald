@@ -21,6 +21,16 @@ defmodule Herald.Adapter do
     end
   end
 
+  @doc """
+  Get implementation module from adapter's module
+  """
+  def get_adapter!(type, adapter) do
+    case get_adapter(type, adapter) do
+      {:ok, module} -> module
+      {:error, reason} -> raise reason
+    end
+  end
+
   @spec get_module(atom(), module()) :: module()
   defp get_module(:connection, adapter),
     do: Module.concat(@connection_protocol, adapter)
