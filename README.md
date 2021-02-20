@@ -2,6 +2,8 @@
 
 ![](https://github.com/radsquare/herald/workflows/Elixir%20CI/badge.svg)
 
+[![Elixir CI](https://github.com/herald-library/herald/actions/workflows/elixir.yml/badge.svg)](https://github.com/herald-library/herald/actions/workflows/elixir.yml)
+
 Herald aims to be a tool which allow companies implement this pattern in a simple way, releasing the developers to think in business logic instead details about broker communication, message exchange, etc.
 
 A complemente documentation can be found at [https://hexdocs.pm/herald](https://hexdocs.pm/herald).
